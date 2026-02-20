@@ -1,0 +1,39 @@
+{
+  "name": "clever-code-mode-mcp",
+  "version": "0.1.0",
+  "description": "Code Mode MCP server for Clever Cloud — exposes the full Clever Cloud API through two tools (search + execute) using the @clevercloud/client command pattern",
+  "type": "module",
+  "license": "Apache-2.0",
+  "author": "davlgd",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/davlgd/clever-code-mode-mcp"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "clever-code-mode-mcp": "./dist/index.js"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "src/catalog/command-catalog.json"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "generate-catalog": "tsx scripts/generate-catalog.ts",
+    "prepublishOnly": "npm run generate-catalog && npm run build",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@clevercloud/client": "^11.4.1",
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

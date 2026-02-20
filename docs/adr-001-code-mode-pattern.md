@@ -1,0 +1,77 @@
+# ADR-001: Code Mode Pattern for Clever Cloud MCP Server
+
+## Status
+
+Accepted
+
+## Context
+
+We need an MCP server that gives LLM agents access to the full Clever Cloud API (~170 commands across 43 categories). The traditional approach of exposing one MCP tool per API endpoint would create 170+ tool definitions, consuming tens of thousands of tokens in every LLM context window just for tool descriptions.
+
+Cloudflare pioneered a "Code Mode" approach for their MCP server: instead of many tools, expose just two (`search` + `execute`) that let the LLM discover API endpoints and compose calls by writing code. This reduced their context usage by 99.9%.
+
+However, Cloudflare's implementation relies on processing a raw OpenAPI specification and running code in sandboxed Cloudflare Workers. Our situation differs: we have `@clevercloud/client`, a strongly-typed TypeScript client with a command pattern, and we run locally on the user's machine.
+
+## Decisions
+
+### 1. Two-tool Code Mode architecture
+
+**Decision**: Expose exactly two MCP tools — `search` and `execute`.
+
+- `search`: text-based filtering over a static command catalog
+- `execute`: runs JavaScript code with a pre-authenticated `CcApiClient` and all command classes in scope
+
+**Rationale**: ~170 commands at ~100 tokens each = ~17,000 tokens per context. Two tools with concise descriptions use ~500 tokens total. The LLM discovers what it needs on demand via `search`.
+
+### 2. Use `@clevercloud/client` commands directly (no OpenAPI spec processing)
+
+**Decision**: The execute tool exposes the client's command classes (`ListApplicationCommand`, `CreateDomainCommand`, etc.) rather than raw REST calls.
+
+**Rationale**: The command classes provide:
+- Automatic `ownerId` resolution from `applicationId`/`addonId`
+- Response transformation and error mapping
+- Typed parameters (surfaced in the catalog for the LLM)
+- No need to download, parse, resolve `$ref`s, and pre-process an OpenAPI spec
+
+This is a key advantage over Cloudflare's approach, which must maintain an OpenAPI spec processor and cron job.
+
+### 3. No sandbox / no Worker isolation
+
+**Decision**: Execute user-provided code via `new AsyncFunction(...)` directly in the Node.js process.
+
+**Rationale**: The MCP server runs locally on the user's machine as a stdio process. The user (or their LLM agent) already has full system access — they can run shell commands, edit files, etc. Sandboxing the API calls adds complexity without meaningful security benefit. The threat model is identical to any other MCP tool.
+
+A configurable timeout (`CC_MCP_TIMEOUT_MS`, default 30s) protects against infinite loops.
+
+### 4. API Token authentication only
+
+**Decision**: Support only `api-token` authentication, not OAuth v1.
+
+**Rationale**: OAuth v1 PLAINTEXT requires a multi-step browser flow with consumer key/secret exchange. This is incompatible with a headless MCP server invoked by a CLI tool. API tokens are:
+- Simple to create (one step in the Clever Cloud console)
+- Long-lived and scopable
+- Passed via a single environment variable
+
+### 5. Static command catalog generated at build time
+
+**Decision**: A build script introspects `@clevercloud/client` to generate a JSON catalog and a TypeScript command registry. Both are committed to git.
+
+**Rationale**:
+- No runtime introspection or dynamic import overhead
+- The catalog format is optimized for the `search` tool (class name, category, params, description)
+- Regenerated only when upgrading `@clevercloud/client`
+- The command registry uses static imports for fast startup and TypeScript verification
+
+### 6. Eager command class loading
+
+**Decision**: All ~170 command classes are statically imported at startup into a flat `Record<string, CommandClass>`.
+
+**Rationale**: The MCP server is a long-running process. Loading all commands at startup (< 50ms) avoids per-call dynamic import latency. The LLM accesses commands as `commands.ListApplicationCommand` — a direct, unambiguous mapping from search results to executable code.
+
+## Consequences
+
+- LLM agents can access the full Clever Cloud API surface with minimal token overhead
+- Adding new commands requires regenerating the catalog (`npm run generate-catalog`)
+- No type safety on LLM-generated code (errors are caught at runtime and returned to the LLM)
+- The timeout protects against infinite loops but not against slow API calls
+- No multi-tenant safety — this is a single-user, local-execution tool by design

@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:blog.cloudflare.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebSearch",
+      "WebFetch(domain:www.clever-cloud.com)",
+      "WebFetch(domain:www.clever.cloud)",
+      "WebFetch(domain:api.clever-cloud.com)",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(find:*)",
+      "Bash(npm view:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tsx:*)",
+      "Bash(node -e:*)",
+      "Bash(npx tsc:*)",
+      "Bash(source:*)",
+      "Bash(CLEVER_CLOUD_API_TOKEN=\"$CLEVER_CLOUD_API_TOKEN\" timeout 3 node:*)",
+      "Bash(echo:*)",
+      "Bash(export CLEVER_CLOUD_API_TOKEN:*)"
+    ]
+  }
+}
