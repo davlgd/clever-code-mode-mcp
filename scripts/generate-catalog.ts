@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import type { CatalogEntry } from "../src/catalog/catalog.js";
 
 const CLIENT_PKG_DIR = path.resolve("node_modules/@clevercloud/client");
 const COMMANDS_SRC_DIR = path.join(
@@ -38,17 +39,6 @@ const BASE_TYPES: Record<string, Record<string, { type: string; required: boolea
   },
 };
 
-interface CatalogEntry {
-  className: string;
-  category: string;
-  importSubpath: string;
-  description: string;
-  params: Record<string, string>;
-  requiredParams: string[];
-  endpoints: string[];
-  isStream: boolean;
-}
-
 function classNameToDescription(className: string): string {
   // Remove "Command" suffix, split PascalCase
   const withoutCommand = className.replace(/Command$/, "");
@@ -56,35 +46,46 @@ function classNameToDescription(className: string): string {
   return words.charAt(0).toUpperCase() + words.slice(1).toLowerCase();
 }
 
-function extractExportedClasses(source: string): string[] {
-  const classes: string[] = [];
-  const re = /^export\s+class\s+(\w+Command)\s+extends\s+/gm;
+interface ExtractedCommand {
+  className: string;
+  endpoints: string[];
+  isStream: boolean;
+}
+
+/**
+ * Extracts all exported command classes from a source file,
+ * each with its own endpoints and stream flag.
+ *
+ * The @endpoint JSDoc tags that precede each class declaration
+ * are associated with that specific class, not the whole file.
+ */
+function extractCommands(source: string): ExtractedCommand[] {
+  const results: ExtractedCommand[] = [];
+
+  // Split source into segments: each class gets the comment block above it
+  const classRe =
+    /(?<comment>(?:\/\*\*[\s\S]*?\*\/\s*)*?)export\s+class\s+(?<name>\w+Command)\s+extends\s+(?<base>\w+)/g;
   let match;
-  while ((match = re.exec(source)) !== null) {
-    const name = match[1];
-    // Skip inner/internal commands — they're implementation details
+
+  while ((match = classRe.exec(source)) !== null) {
+    const { comment, name, base } = match.groups!;
     if (name.includes("Inner")) continue;
-    classes.push(name);
-  }
-  return classes;
-}
 
-function extractEndpoints(source: string): string[] {
-  const endpoints: string[] = [];
-  const re = /@endpoint\s+(\[.+?\].*)/g;
-  let match;
-  while ((match = re.exec(source)) !== null) {
-    endpoints.push(match[1].trim());
-  }
-  return endpoints;
-}
+    const endpoints: string[] = [];
+    const endpointRe = /@endpoint\s+(\[.+?\].*)/g;
+    let epMatch;
+    while ((epMatch = endpointRe.exec(comment)) !== null) {
+      endpoints.push(epMatch[1].trim());
+    }
 
-function isStreamCommand(source: string, className: string): boolean {
-  // Check if the class extends a stream command base
-  const re = new RegExp(
-    `class\\s+${className}\\s+extends\\s+\\w*Stream\\w*`,
-  );
-  return re.test(source);
+    results.push({
+      className: name,
+      endpoints,
+      isStream: /Stream/i.test(base),
+    });
+  }
+
+  return results;
 }
 
 function parseTypesFile(
@@ -180,33 +181,24 @@ function main() {
 
     for (const file of files) {
       const source = fs.readFileSync(path.join(categoryDir, file), "utf-8");
-      const exportedClasses = extractExportedClasses(source);
+      const extracted = extractCommands(source);
 
-      if (exportedClasses.length === 0) continue;
+      if (extracted.length === 0) continue;
 
-      const endpoints = extractEndpoints(source);
+      // Try to read the types file (shared across all classes in the file)
+      const typesFile = file.replace(".js", ".types.d.ts");
+      const typesPath = path.join(COMMANDS_TYPES_DIR, category, typesFile);
+      const typesContent = fs.existsSync(typesPath)
+        ? fs.readFileSync(typesPath, "utf-8")
+        : null;
 
-      for (const className of exportedClasses) {
-        // Deduplicate: same class name may be exported from multiple files (client library bug)
+      for (const { className, endpoints, isStream } of extracted) {
         if (seenClassNames.has(className)) continue;
-
         seenClassNames.add(className);
 
-        const isStream = isStreamCommand(source, className);
-
-        // Try to read the types file
-        const typesFile = file.replace(".js", ".types.d.ts");
-        const typesPath = path.join(COMMANDS_TYPES_DIR, category, typesFile);
-
-        let params: Record<string, string> = {};
-        let requiredParams: string[] = [];
-
-        if (fs.existsSync(typesPath)) {
-          const typesContent = fs.readFileSync(typesPath, "utf-8");
-          const parsed = parseTypesFile(typesContent, className);
-          params = parsed.params;
-          requiredParams = parsed.requiredParams;
-        }
+        const { params, requiredParams } = typesContent
+          ? parseTypesFile(typesContent, className)
+          : { params: {} as Record<string, string>, requiredParams: [] as string[] };
 
         const importSubpath = `${category}/${file}`;
 

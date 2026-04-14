@@ -1,9 +1,18 @@
-import { z } from "zod";
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import catalogData from "../catalog/command-catalog.json" with { type: "json" };
+import { z } from "zod";
+
 import type { CatalogEntry } from "../catalog/catalog.js";
 
-const catalog = catalogData as unknown as CatalogEntry[];
+const catalogPath = join(
+  dirname(fileURLToPath(import.meta.url)),
+  "../catalog/command-catalog.json",
+);
+const catalog: CatalogEntry[] = JSON.parse(readFileSync(catalogPath, "utf-8"));
+const categories = [...new Set(catalog.map((e) => e.category))];
 
 export function registerSearchTool(server: McpServer): void {
   server.tool(
@@ -38,7 +47,7 @@ export function registerSearchTool(server: McpServer): void {
           content: [
             {
               type: "text" as const,
-              text: `No commands found for query "${query}". Try broader terms like a category name: ${[...new Set(catalog.map((e) => e.category))].join(", ")}`,
+              text: `No commands found for query "${query}". Try broader terms like a category name: ${categories.join(", ")}`,
             },
           ],
         };

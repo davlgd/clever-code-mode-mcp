@@ -1,6 +1,7 @@
-import { z } from "zod";
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { CcApiClient } from "@clevercloud/client/cc-api-client.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { z } from "zod";
+
 import { commands } from "../commands/command-registry.js";
 import type { Config } from "../config.js";
 
@@ -18,9 +19,10 @@ export function registerExecuteTool(
 Available in scope:
 - client: CcApiClient instance (pre-authenticated with API token)
 - commands: object with all command classes (e.g., commands.ListApplicationCommand)
+- signal: AbortSignal that fires on timeout — pass to client.send(command, { signal }) for cancellable requests
 
 Usage pattern:
-  const apps = await client.send(new commands.ListApplicationCommand({ ownerId: "orga_xxx" }));
+  const apps = await client.send(new commands.ListApplicationCommand({ ownerId: "orga_xxx" }), { signal });
   return apps;
 
 Notes:
@@ -47,36 +49,27 @@ Notes:
           logs.push(`[ERROR] ${args.map(String).join(" ")}`),
       };
 
+      const signal = AbortSignal.timeout(config.executionTimeoutMs);
+
       try {
         // eslint-disable-next-line @typescript-eslint/no-implied-eval
         const fn = new Function(
           "client",
           "commands",
           "console",
+          "signal",
           `return (async () => { ${code} })();`,
         ) as (
           client: CcApiClient,
           commands: Record<string, unknown>,
           console: typeof capturedConsole,
+          signal: AbortSignal,
         ) => Promise<unknown>;
 
-        const resultPromise = fn(client, commands, capturedConsole);
+        const result = await fn(client, commands, capturedConsole, signal);
 
-        const timeoutPromise = new Promise<never>((_, reject) =>
-          setTimeout(
-            () =>
-              reject(
-                new Error(
-                  `Execution timed out after ${config.executionTimeoutMs}ms`,
-                ),
-              ),
-            config.executionTimeoutMs,
-          ),
-        );
-
-        const result = await Promise.race([resultPromise, timeoutPromise]);
-
-        let resultStr = JSON.stringify(result, null, 2) ?? "undefined";
+        const json = JSON.stringify(result, null, 2);
+        let resultStr = json !== undefined ? json : "undefined";
 
         if (resultStr.length > config.maxOutputLength) {
           resultStr =
@@ -93,10 +86,15 @@ Notes:
           content: [{ type: "text" as const, text: output }],
         };
       } catch (error: unknown) {
-        const errorMessage =
-          error instanceof Error ? error.message : String(error);
+        const isTimeout =
+          error instanceof DOMException && error.name === "TimeoutError";
+        const errorMessage = isTimeout
+          ? `Execution timed out after ${config.executionTimeoutMs}ms`
+          : error instanceof Error
+            ? error.message
+            : String(error);
         const errorStack =
-          error instanceof Error ? error.stack : undefined;
+          !isTimeout && error instanceof Error ? error.stack : undefined;
 
         const output = [
           logs.length > 0 ? `Console output:\n${logs.join("\n")}\n\n` : "",

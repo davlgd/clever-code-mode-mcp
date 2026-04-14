@@ -6,7 +6,7 @@ Accepted
 
 ## Context
 
-We need an MCP server that gives LLM agents access to the full Clever Cloud API (~170 commands across 43 categories). The traditional approach of exposing one MCP tool per API endpoint would create 170+ tool definitions, consuming tens of thousands of tokens in every LLM context window just for tool descriptions.
+We need an MCP server that gives LLM agents access to the full Clever Cloud API (~177 commands across 43 categories). The traditional approach of exposing one MCP tool per API endpoint would create 177+ tool definitions, consuming tens of thousands of tokens in every LLM context window just for tool descriptions.
 
 Cloudflare pioneered a "Code Mode" approach for their MCP server: instead of many tools, expose just two (`search` + `execute`) that let the LLM discover API endpoints and compose calls by writing code. This reduced their context usage by 99.9%.
 
@@ -21,7 +21,7 @@ However, Cloudflare's implementation relies on processing a raw OpenAPI specific
 - `search`: text-based filtering over a static command catalog
 - `execute`: runs JavaScript code with a pre-authenticated `CcApiClient` and all command classes in scope
 
-**Rationale**: ~170 commands at ~100 tokens each = ~17,000 tokens per context. Two tools with concise descriptions use ~500 tokens total. The LLM discovers what it needs on demand via `search`.
+**Rationale**: ~177 commands at ~100 tokens each = ~17,000 tokens per context. Two tools with concise descriptions use ~500 tokens total. The LLM discovers what it needs on demand via `search`.
 
 ### 2. Use `@clevercloud/client` commands directly (no OpenAPI spec processing)
 
@@ -41,7 +41,7 @@ This is a key advantage over Cloudflare's approach, which must maintain an OpenA
 
 **Rationale**: The MCP server runs locally on the user's machine as a stdio process. The user (or their LLM agent) already has full system access — they can run shell commands, edit files, etc. Sandboxing the API calls adds complexity without meaningful security benefit. The threat model is identical to any other MCP tool.
 
-A configurable timeout (`CC_MCP_TIMEOUT_MS`, default 30s) protects against infinite loops.
+A configurable timeout via `AbortSignal.timeout()` (`CC_MCP_TIMEOUT_MS`, default 30s) protects against runaway execution and cancels in-flight network requests.
 
 ### 4. API Token authentication only
 
@@ -64,7 +64,7 @@ A configurable timeout (`CC_MCP_TIMEOUT_MS`, default 30s) protects against infin
 
 ### 6. Eager command class loading
 
-**Decision**: All ~170 command classes are statically imported at startup into a flat `Record<string, CommandClass>`.
+**Decision**: All ~177 command classes are statically imported at startup into a flat `Record<string, CommandClass>`.
 
 **Rationale**: The MCP server is a long-running process. Loading all commands at startup (< 50ms) avoids per-call dynamic import latency. The LLM accesses commands as `commands.ListApplicationCommand` — a direct, unambiguous mapping from search results to executable code.
 
@@ -73,5 +73,5 @@ A configurable timeout (`CC_MCP_TIMEOUT_MS`, default 30s) protects against infin
 - LLM agents can access the full Clever Cloud API surface with minimal token overhead
 - Adding new commands requires regenerating the catalog (`npm run generate-catalog`)
 - No type safety on LLM-generated code (errors are caught at runtime and returned to the LLM)
-- The timeout protects against infinite loops but not against slow API calls
+- The `AbortSignal` timeout cancels in-flight requests, but CPU-bound infinite loops are not interruptible in a single-threaded Node.js process
 - No multi-tenant safety — this is a single-user, local-execution tool by design

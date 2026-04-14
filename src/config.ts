@@ -4,6 +4,16 @@ export interface Config {
   maxOutputLength: number;
 }
 
+function parsePositiveInt(value: string | undefined, fallback: number): number {
+  if (value == null) return fallback;
+  const parsed = parseInt(value, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    console.error(`Invalid value "${value}", using default ${fallback}`);
+    return fallback;
+  }
+  return parsed;
+}
+
 export function getConfig(): Config {
   const apiToken = process.env.CLEVER_CLOUD_API_TOKEN;
   if (!apiToken) {
@@ -16,10 +26,13 @@ export function getConfig(): Config {
 
   return {
     apiToken,
-    executionTimeoutMs: parseInt(
-      process.env.CC_MCP_TIMEOUT_MS ?? "30000",
-      10,
+    executionTimeoutMs: parsePositiveInt(
+      process.env.CC_MCP_TIMEOUT_MS,
+      30_000,
     ),
-    maxOutputLength: parseInt(process.env.CC_MCP_MAX_OUTPUT ?? "50000", 10),
+    maxOutputLength: parsePositiveInt(
+      process.env.CC_MCP_MAX_OUTPUT,
+      50_000,
+    ),
   };
 }

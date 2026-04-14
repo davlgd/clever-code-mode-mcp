@@ -103,6 +103,7 @@ import { GetNetworkGroupCommand } from "@clevercloud/client/cc-api-commands/netw
 import { GetNetworkGroupMemberCommand } from "@clevercloud/client/cc-api-commands/network-group/get-network-group-member-command.js";
 import { GetNetworkGroupPeerCommand } from "@clevercloud/client/cc-api-commands/network-group/get-network-group-peer-command.js";
 import { GetNetworkGroupWireguardConfigurationCommand } from "@clevercloud/client/cc-api-commands/network-group/get-network-group-wireguard-configuration-command.js";
+import { GetNetworkGroupWireguardConfigurationUrlCommand } from "@clevercloud/client/cc-api-commands/network-group/get-network-group-wireguard-configuration-url-command.js";
 import { ListNetworkGroupCommand } from "@clevercloud/client/cc-api-commands/network-group/list-network-group-command.js";
 import { SearchNetworkGroupCommand } from "@clevercloud/client/cc-api-commands/network-group/search-network-group-command.js";
 import { CreateEmailNotificationCommand } from "@clevercloud/client/cc-api-commands/notification/create-email-notification-command.js";
@@ -282,6 +283,7 @@ export const commands: Record<string, new (params?: any) => any> = {
   GetNetworkGroupMemberCommand,
   GetNetworkGroupPeerCommand,
   GetNetworkGroupWireguardConfigurationCommand,
+  GetNetworkGroupWireguardConfigurationUrlCommand,
   ListNetworkGroupCommand,
   SearchNetworkGroupCommand,
   CreateEmailNotificationCommand,

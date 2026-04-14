@@ -1,3 +1,16 @@
 node_modules/
 dist/
 .env
+demo/
+
+# Local tooling / editor state
+.claude/settings.local.json
+.vscode/
+.idea/
+
+# OS artifacts
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*

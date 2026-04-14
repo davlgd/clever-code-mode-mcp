@@ -394,8 +394,7 @@
     ],
     "endpoints": [
       "[POST] /v2/organisations/:XXX/applications",
-      "[GET] /v2/organisations/:XXX/applications/:XXX/branches",
-      "[POST] /v2/organisations/:XXX/applications"
+      "[GET] /v2/organisations/:XXX/applications/:XXX/branches"
     ],
     "isStream": false
   },
@@ -467,8 +466,7 @@
     ],
     "endpoints": [
       "[GET] /v2/organisations/:XXX/applications/:XXX",
-      "[GET] /v2/organisations/:XXX/applications/:XXX/branches",
-      "[GET] /v2/organisations/:XXX/applications/:XXX"
+      "[GET] /v2/organisations/:XXX/applications/:XXX/branches"
     ],
     "isStream": false
   },
@@ -486,7 +484,6 @@
       "withBranches"
     ],
     "endpoints": [
-      "[GET] /v2/organisations/:XXX/applications",
       "[GET] /v2/organisations/:XXX/applications"
     ],
     "isStream": false
@@ -542,9 +539,7 @@
       "applicationId"
     ],
     "endpoints": [
-      "[PUT] /v2/organisations/:XXX/applications/:XXX",
-      "[PUT] /v2/organisations/:XXX/applications/:XXX",
-      "[PUT] /v2/organisations/:XXX/applications/:XXX/branch"
+      "[PUT] /v2/organisations/:XXX/applications/:XXX"
     ],
     "isStream": false
   },
@@ -656,9 +651,7 @@
       "addonId"
     ],
     "endpoints": [
-      "[GET] /v2/backups/:XXX/:XXX",
-      "[GET] /v2/backups/:XXX/:XXX",
-      "[GET] /v4/addon-providers/:XXX/addons/:XXX"
+      "[GET] /v2/backups/:XXX/:XXX"
     ],
     "isStream": false
   },
@@ -764,8 +757,7 @@
       "deploymentId"
     ],
     "endpoints": [
-      "[GET] /v4/orchestration/organisations/:XXX/applications/:XXX/deployments/:XXX",
-      "[GET] /v2/organisations/:XXX/applications/:XXX/deployments/:XXX"
+      "[GET] /v4/orchestration/organisations/:XXX/applications/:XXX/deployments/:XXX"
     ],
     "isStream": false
   },
@@ -777,8 +769,6 @@
     "params": {},
     "requiredParams": [],
     "endpoints": [
-      "[GET] /v2/organisations/:XXX/deployments",
-      "[GET] /v2/organisations/:XXX/applications/:XXX/deployments",
       "[GET] /v2/organisations/:XXX/deployments",
       "[GET] /v2/organisations/:XXX/applications/:XXX/deployments"
     ],
@@ -852,7 +842,6 @@
       "applicationId"
     ],
     "endpoints": [
-      "[GET] /v2/organisations/:XXX/applications/:XXX/vhosts",
       "[GET] /v2/organisations/:XXX/applications/:XXX/vhosts"
     ],
     "isStream": false
@@ -960,11 +949,7 @@
       "[GET] /v2/organisations/:XXX/applications/:XXX/env",
       "[GET] /v2/organisations/:XXX/addons/:XXX/env",
       "[GET] /v2/organisations/:XXX/applications/:XXX/dependencies/env",
-      "[GET] /v2/organisations/:XXX/applications/:XXX/env",
-      "[GET] /v2/organisations/:XXX/applications/:XXX/env",
-      "[GET] /v2/organisations/:XXX/addons/:XXX/env",
-      "[GET] /v2/organisations/:XXX/applications/:XXX/dependencies/env",
-      "[GET] /v2/organisations/:XXX/applications/:XXX/addons/env"
+      "[GET] /v2/organisations/:XXX/applications/:XXX/env"
     ],
     "isStream": false
   },
@@ -1100,8 +1085,7 @@
     ],
     "endpoints": [
       "[POST] /v4/saas/grafana/:XXX",
-      "[GET] /v4/saas/grafana/:XXX",
-      "[POST] /v4/saas/grafana/:XXX"
+      "[GET] /v4/saas/grafana/:XXX"
     ],
     "isStream": false
   },
@@ -1298,8 +1282,6 @@
     ],
     "endpoints": [
       "[GET] /v4/addon-providers/jenkins/addons/:XXX",
-      "[GET] /v4/addon-providers/jenkins/addons/:XXX/updates",
-      "[GET] /v4/addon-providers/jenkins/addons/:XXX",
       "[GET] /v4/addon-providers/jenkins/addons/:XXX/updates"
     ],
     "isStream": false
@@ -1312,8 +1294,6 @@
     "params": {},
     "requiredParams": [],
     "endpoints": [
-      "[PUT] /v2/organisations/:XXX/applications/:XXX/dependencies/:XXX",
-      "[POST] /v2/organisations/:XXX/applications/:XXX/addons",
       "[PUT] /v2/organisations/:XXX/applications/:XXX/dependencies/:XXX",
       "[POST] /v2/organisations/:XXX/applications/:XXX/addons"
     ],
@@ -1334,10 +1314,7 @@
       "targetApplicationId"
     ],
     "endpoints": [
-      "[PUT] /v2/organisations/:XXX/applications/:XXX/dependencies/:XXX",
-      "[POST] /v2/organisations/:XXX/applications/:XXX/addons",
-      "[PUT] /v2/organisations/:XXX/applications/:XXX/dependencies/:XXX",
-      "[POST] /v2/organisations/:XXX/applications/:XXX/addons"
+      "[PUT] /v2/organisations/:XXX/applications/:XXX/dependencies/:XXX"
     ],
     "isStream": false
   },
@@ -1356,9 +1333,6 @@
       "targetAddonId"
     ],
     "endpoints": [
-      "[PUT] /v2/organisations/:XXX/applications/:XXX/dependencies/:XXX",
-      "[POST] /v2/organisations/:XXX/applications/:XXX/addons",
-      "[PUT] /v2/organisations/:XXX/applications/:XXX/dependencies/:XXX",
       "[POST] /v2/organisations/:XXX/applications/:XXX/addons"
     ],
     "isStream": false
@@ -1373,10 +1347,7 @@
     "endpoints": [
       "[GET] /v2/organisations/:XXX/addons/:XXX/applications",
       "[GET] /v2/organisations/:XXX/applications/:XXX/dependencies",
-      "[GET] /v2/organisations/:XXX/applications/:XXX/addons",
-      "[PUT] /v2/organisations/:XXX/applications/:XXX/dependencies/:XXX",
-      "[GET] /v2/organisations/:XXX/applications/:XXX/addons",
-      "[GET] /v2/organisations/:XXX/addons/:XXX/applications"
+      "[GET] /v2/organisations/:XXX/applications/:XXX/addons"
     ],
     "isStream": false
   },
@@ -1388,8 +1359,6 @@
     "params": {},
     "requiredParams": [],
     "endpoints": [
-      "[DELETE] /v2/organisations/:XXX/applications/:XXX/dependencies/:XXX",
-      "[DELETE] /v2/organisations/:XXX/applications/:XXX/addons/:XXX",
       "[DELETE] /v2/organisations/:XXX/applications/:XXX/dependencies/:XXX",
       "[DELETE] /v2/organisations/:XXX/applications/:XXX/addons/:XXX"
     ],
@@ -1410,10 +1379,7 @@
       "targetApplicationId"
     ],
     "endpoints": [
-      "[DELETE] /v2/organisations/:XXX/applications/:XXX/dependencies/:XXX",
-      "[DELETE] /v2/organisations/:XXX/applications/:XXX/addons/:XXX",
-      "[DELETE] /v2/organisations/:XXX/applications/:XXX/dependencies/:XXX",
-      "[DELETE] /v2/organisations/:XXX/applications/:XXX/addons/:XXX"
+      "[DELETE] /v2/organisations/:XXX/applications/:XXX/dependencies/:XXX"
     ],
     "isStream": false
   },
@@ -1432,9 +1398,6 @@
       "targetAddonId"
     ],
     "endpoints": [
-      "[DELETE] /v2/organisations/:XXX/applications/:XXX/dependencies/:XXX",
-      "[DELETE] /v2/organisations/:XXX/applications/:XXX/addons/:XXX",
-      "[DELETE] /v2/organisations/:XXX/applications/:XXX/dependencies/:XXX",
       "[DELETE] /v2/organisations/:XXX/applications/:XXX/addons/:XXX"
     ],
     "isStream": false
@@ -1559,8 +1522,7 @@
     "requiredParams": [],
     "endpoints": [
       "[POST] /v4/drains/organisations/:XXX/applications/:XXX/drains",
-      "[GET] /v4/drains/organisations/:XXX/applications/:XXX/drains/:XXX",
-      "[POST] /v4/drains/organisations/:XXX/applications/:XXX/drains"
+      "[GET] /v4/drains/organisations/:XXX/applications/:XXX/drains/:XXX"
     ],
     "isStream": false
   },
@@ -1585,8 +1547,7 @@
     "requiredParams": [],
     "endpoints": [
       "[PUT] /v4/drains/organisations/:XXX/applications/:XXX/drains/:XXX/disable",
-      "[GET] /v4/drains/organisations/:XXX/applications/:XXX/drains/:XXX",
-      "[PUT] /v4/drains/organisations/:XXX/applications/:XXX/drains/:XXX/disable"
+      "[GET] /v4/drains/organisations/:XXX/applications/:XXX/drains/:XXX"
     ],
     "isStream": false
   },
@@ -1599,8 +1560,7 @@
     "requiredParams": [],
     "endpoints": [
       "[PUT] /v4/drains/organisations/:XXX/applications/:XXX/drains/:XXX/enable",
-      "[GET] /v4/drains/organisations/:XXX/applications/:XXX/drains/:XXX",
-      "[PUT] /v4/drains/organisations/:XXX/applications/:XXX/drains/:XXX/enable"
+      "[GET] /v4/drains/organisations/:XXX/applications/:XXX/drains/:XXX"
     ],
     "isStream": false
   },
@@ -1782,8 +1742,7 @@
     ],
     "endpoints": [
       "[POST] /v4/networkgroups/organisations/:XXX/networkgroups",
-      "[GET] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX",
-      "[POST] /v4/networkgroups/organisations/:XXX/networkgroups"
+      "[GET] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX"
     ],
     "isStream": false
   },
@@ -1814,8 +1773,7 @@
     ],
     "endpoints": [
       "[POST] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX/external-peers",
-      "[GET] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX/peers/:XXX",
-      "[POST] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX/external-peers"
+      "[GET] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX/peers/:XXX"
     ],
     "isStream": false
   },
@@ -1837,8 +1795,7 @@
     ],
     "endpoints": [
       "[POST] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX/members",
-      "[GET] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX/members/:XXX",
-      "[POST] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX/members"
+      "[GET] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX/members/:XXX"
     ],
     "isStream": false
   },
@@ -1857,8 +1814,7 @@
     ],
     "endpoints": [
       "[DELETE] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX",
-      "[GET] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX",
-      "[DELETE] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX"
+      "[GET] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX"
     ],
     "isStream": false
   },
@@ -1879,8 +1835,7 @@
     ],
     "endpoints": [
       "[DELETE] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX/external-peers/:XXX",
-      "[GET] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX/peers/:XXX",
-      "[DELETE] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX/external-peers/:XXX"
+      "[GET] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX/peers/:XXX"
     ],
     "isStream": false
   },
@@ -1901,8 +1856,7 @@
     ],
     "endpoints": [
       "[DELETE] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX/members/:XXX",
-      "[GET] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX/members/:XXX",
-      "[DELETE] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX/members/:XXX"
+      "[GET] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX/members/:XXX"
     ],
     "isStream": false
   },
@@ -1981,6 +1935,26 @@
     ],
     "endpoints": [
       "[GET] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX/peers/:XXX/wireguard/configuration"
+    ],
+    "isStream": false
+  },
+  {
+    "className": "GetNetworkGroupWireguardConfigurationUrlCommand",
+    "category": "network-group",
+    "importSubpath": "network-group/get-network-group-wireguard-configuration-url-command.js",
+    "description": "Get network group wireguard configuration url",
+    "params": {
+      "ownerId": "string",
+      "networkGroupId": "string",
+      "peerId": "string"
+    },
+    "requiredParams": [
+      "ownerId",
+      "networkGroupId",
+      "peerId"
+    ],
+    "endpoints": [
+      "[GET] /v4/networkgroups/organisations/:XXX/networkgroups/:XXX/peers/:XXX/wireguard/configuration/presigned-url"
     ],
     "isStream": false
   },
@@ -2108,8 +2082,6 @@
     "requiredParams": [],
     "endpoints": [
       "[GET] /v2/notifications/info/events",
-      "[GET] /v2/notifications/info/webhookformats",
-      "[GET] /v2/notifications/info/events",
       "[GET] /v2/notifications/info/webhookformats"
     ],
     "isStream": false
@@ -2207,8 +2179,7 @@
     ],
     "endpoints": [
       "[GET] /v2/organisations/:XXX/consumers/:XXX",
-      "[GET] /v2/organisations/:XXX/consumers/:XXX/secret",
-      "[GET] /v2/organisations/:XXX/consumers/:XXX"
+      "[GET] /v2/organisations/:XXX/consumers/:XXX/secret"
     ],
     "isStream": false
   },
@@ -2243,7 +2214,6 @@
       "withSecret"
     ],
     "endpoints": [
-      "[GET] /v2/organisations/:XXX/consumers",
       "[GET] /v2/organisations/:XXX/consumers",
       "[GET] /v2/organisations/:XXX/consumers"
     ],
@@ -2677,7 +2647,6 @@
       "withVersions"
     ],
     "endpoints": [
-      "[GET] /v2/products/addonproviders/:XXX",
       "[GET] /v2/products/addonproviders/:XXX"
     ],
     "isStream": false
@@ -2743,8 +2712,7 @@
     ],
     "endpoints": [
       "[GET] /v2/products/addonproviders",
-      "[GET] /v4/addon-providers/:XXX",
-      "[GET] /v2/products/addonproviders"
+      "[GET] /v4/addon-providers/:XXX"
     ],
     "isStream": false
   },
@@ -2813,7 +2781,6 @@
     "requiredParams": [],
     "endpoints": [
       "[GET] /v2/self",
-      "[GET] /v2/self/emails",
       "[GET] /v2/self/emails"
     ],
     "isStream": false
@@ -2891,8 +2858,6 @@
     ],
     "endpoints": [
       "[GET] /v4/addon-providers/addon-pulsar/addons/:XXX",
-      "[GET] /v4/addon-providers/addon-pulsar/clusters/:XXX",
-      "[GET] /v4/addon-providers/addon-pulsar/addons/:XXX",
       "[GET] /v4/addon-providers/addon-pulsar/clusters/:XXX"
     ],
     "isStream": false
@@ -2911,7 +2876,6 @@
       "key"
     ],
     "endpoints": [
-      "[PUT] /v2/self/keys/:XXX",
       "[PUT] /v2/self/keys/:XXX"
     ],
     "isStream": false
